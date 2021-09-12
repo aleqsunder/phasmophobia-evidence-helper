@@ -30,8 +30,7 @@
 </template>
 
 <script>
-    import config from '../config'
-    const { ghosts, evidences } = import(`../constants/lang/${config.PROJECT_LANGUAGE}/list`)
+    import { ghosts, evidences } from '../constants/lang/ru/list'
 
     export default {
         name: "app",
