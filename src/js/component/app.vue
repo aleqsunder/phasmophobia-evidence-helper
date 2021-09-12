@@ -1,16 +1,16 @@
 <template>
     <div class="item">
         <h3 class="item__title">Выбранные улики</h3>
-        <ul v-if="SELECTED.EVIDENCES.length > 0" class="item__content" data-selected-evidences>
+        <transition-group v-if="SELECTED.EVIDENCES.length > 0" name="item__content" tag="ul" class="item__content">
             <li class="item__content-li" v-for="(key, index) in SELECTED.EVIDENCES" :key="index" v-text="EVIDENCE[key]" @click="unselect(key)"/>
-        </ul>
+        </transition-group>
         <h5 v-else class="item__content item_title">Не выбрано ни одной улики</h5>
     </div>
     <div class="item">
         <h3 class="item__title">Все улики</h3>
-        <ul class="item__content" data-evidences>
-            <li class="item__content-li" v-for="(translate, key) in EVIDENCE" :key="key" v-text="translate" @click="select(key)"/>
-        </ul>
+        <transition-group name="item__content" tag="ul" class="item__content">
+            <li class="item__content-li" v-for="key in filteredEvidences" :key="key" v-text="EVIDENCE[key]" @click="select(key)"/>
+        </transition-group>
     </div>
     <div class="item">
         <h3 class="item__title">Призраки</h3>
@@ -18,10 +18,11 @@
             <li class="item__content-li" v-for="(item, key) in filteredGhosts" :key="key">
                 <p class="item__content-li__header">{{ GHOSTS[item].name }}</p>
                 <ul v-if="SELECTED.EVIDENCES.length === 2" class="item__content-li__massive">
-                    <li v-for="(evidence, key) in GHOSTS[item].evidences" :key="key"
-                        :class="['item__content-li__massive-item', {'item__content-li__massive-item--hidden': SELECTED.EVIDENCES.includes(evidence)}]">
-                        {{ EVIDENCE[evidence] }}
-                    </li>
+                    <template v-for="evidence in GHOSTS[item].evidences">
+                        <li v-if="!SELECTED.EVIDENCES.includes(evidence)" class="item__content-li__massive-item">
+                            {{ EVIDENCE[evidence] }}
+                        </li>
+                    </template>
                 </ul>
             </li>
         </ul>
@@ -134,6 +135,10 @@
                 return Object.keys(this.GHOSTS).filter(ghost => {
                     return this.SELECTED.EVIDENCES.every(evidence => this.GHOSTS[ghost].evidences.includes(evidence))
                 })
+            },
+
+            filteredEvidences () {
+                return Object.keys(this.EVIDENCE).filter(evidence => !this.SELECTED.EVIDENCES.includes(evidence))
             }
         }
     }
