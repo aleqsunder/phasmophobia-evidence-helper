@@ -30,6 +30,9 @@
 </template>
 
 <script>
+    import config from '../config'
+    const { ghosts, evidences } = import(`../constants/lang/${config.PROJECT_LANGUAGE}/list`)
+
     export default {
         name: "app",
 
@@ -40,32 +43,32 @@
                 },
 
                 EVIDENCE: {
-                    ORB: 'Призрачный огонёк',
-                    RADIO: 'Радиоприёмник',
-                    FINGER: 'Отпечатки',
-                    EMP: 'Датчик EMП',
-                    TEMP: 'Минусовая температура',
-                    BOOK: 'Записи в блокноте',
-                    LASER: 'Лазерный протектор',
+                    ORB:    evidences.ORB,
+                    RADIO:  evidences.RADIO,
+                    FINGER: evidences.FINGER,
+                    EMP:    evidences.EMP,
+                    TEMP:   evidences.TEMP,
+                    BOOK:   evidences.BOOK,
+                    LASER:  evidences.LASER,
                 },
 
                 GHOSTS: {
-                    'Дух': ['EMP', 'RADIO', 'BOOK'],
-                    'Мираж': ['EMP', 'LASER', 'RADIO'],
-                    'Фантом': ['RADIO', 'FINGER', 'LASER'],
-                    'Полтергейст': ['RADIO', 'FINGER', 'BOOK'],
-                    'Банши': ['LASER', 'FINGER', 'ORB'],
-                    'Джинн': ['TEMP', 'FINGER', 'EMP'],
-                    'Мара': ['ORB', 'RADIO', 'BOOK'],
-                    'Ревенант': ['ORB', 'TEMP', 'BOOK'],
-                    'Тень': ['BOOK', 'EMP', 'TEMP'],
-                    'Демон': ['FINGER', 'BOOK', 'TEMP'],
-                    'Юрэй': ['ORB', 'LASER', 'TEMP'],
-                    'Они': ['TEMP', 'EMP', 'LASER'],
-                    'Ханту': ['FINGER', 'ORB', 'TEMP'],
-                    'Ёкай': ['RADIO', 'ORB', 'LASER'],
-                    'Горё': ['EMP', 'FINGER', 'LASER'],
-                    'Мюлинг': ['EMP', 'FINGER', 'BOOK'],
+                    [ghosts.SPIRIT]:      ['EMP', 'RADIO', 'BOOK'],
+                    [ghosts.WRAITH]:      ['EMP', 'LASER', 'RADIO'],
+                    [ghosts.PHANTOM]:     ['RADIO', 'FINGER', 'LASER'],
+                    [ghosts.POLTERGEIST]: ['RADIO', 'FINGER', 'BOOK'],
+                    [ghosts.BANSHEE]:     ['LASER', 'FINGER', 'ORB'],
+                    [ghosts.JINN]:        ['TEMP', 'FINGER', 'EMP'],
+                    [ghosts.MARE]:        ['ORB', 'RADIO', 'BOOK'],
+                    [ghosts.REVENANT]:    ['ORB', 'TEMP', 'BOOK'],
+                    [ghosts.SHADE]:       ['BOOK', 'EMP', 'TEMP'],
+                    [ghosts.DEMON]:       ['FINGER', 'BOOK', 'TEMP'],
+                    [ghosts.YUREI]:       ['ORB', 'LASER', 'TEMP'],
+                    [ghosts.ONI]:         ['TEMP', 'EMP', 'LASER'],
+                    [ghosts.HANTU]:       ['FINGER', 'ORB', 'TEMP'],
+                    [ghosts.YOKAI]:       ['RADIO', 'ORB', 'LASER'],
+                    [ghosts.GORYO]:       ['EMP', 'FINGER', 'LASER'],
+                    [ghosts.MYLING]:      ['EMP', 'FINGER', 'BOOK'],
                 }
             }
         },
