@@ -59,6 +59,25 @@ html, body
   &-leave-active
     position: absolute
 
+.notifications
+  position: fixed
+  top: 0
+  left: 0
+  width: 100%
+
+  display: flex
+  align-items: center
+  flex-direction: column
+
+  &__item
+    max-width: 600px
+    background-color: $black4
+    border-radius: 4px
+    padding: 9px 16px
+    color: $white1
+    margin: 8px 0 0
+    font-size: 13px
+
 @media (max-width: 920px)
   #root
     flex-direction: column
