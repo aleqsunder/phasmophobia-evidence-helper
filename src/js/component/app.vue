@@ -18,7 +18,7 @@
     <div class="item">
         <h3 class="item__title">Призраки</h3>
         <ul class="item__content" data-ghosts>
-            <li class="item__content-li" v-for="item in filteredGhosts" @click="showGhostEvidences(GHOSTS[item])">
+            <li class="item__content-li" v-for="item in filteredGhosts" @click="showGhostEvidences(item)">
                 <p class="item__content-li__header">{{ item }}</p>
                 <ul v-if="SELECTED.EVIDENCES.length === 2" class="item__content-li__massive">
                     <template v-for="evidence in GHOSTS[item]">
@@ -96,7 +96,7 @@
             },
 
             showGhostEvidences (evidences) {
-                this.SELECTED.EVIDENCES = evidences
+                this.SELECTED.EVIDENCES = this.GHOSTS[evidences]
             },
 
             addNotification (message) {
