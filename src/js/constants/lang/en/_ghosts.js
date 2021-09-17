@@ -1,0 +1,18 @@
+export default {
+    spirit:      'Spirit',
+    wraith:      'Wraith',
+    phantom:     'Phantom',
+    poltergeist: 'Poltergeist',
+    banshee:     'Banshee',
+    jinn:        'Jinn',
+    mare:        'Mare',
+    revenant:    'Revenant',
+    shade:       'Shade',
+    demon:       'Demon',
+    yurei:       'Yurei',
+    oni:         'Oni',
+    hantu:       'Hantu',
+    yokai:       'Yokai',
+    goryo:       'Goryo',
+    myling:      'Myling',
+}

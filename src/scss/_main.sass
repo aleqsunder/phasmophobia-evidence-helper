@@ -80,6 +80,26 @@ html, body
     margin: 8px 0 0
     font-size: 13px
 
+.languages
+  position: fixed
+  display: flex
+  top: 0
+  right: 0
+  padding: 0 6px
+
+  &-item
+    margin: 0
+    padding: 0
+    cursor: pointer
+    opacity: .6
+    transition: opacity .2s
+
+    &:hover, &--selected
+      opacity: 1
+
+    &:not(:first-child)
+      margin-left: 6px
+
 @media (max-width: 920px)
   #root
     flex-direction: column

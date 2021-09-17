@@ -1,102 +1,85 @@
 <template>
-    <div class="notifications">
-        <notification v-for="notification in notifications" :key="notification.key" :notification="notification" @delete="removeNotification"/>
-    </div>
-    <div class="item">
-        <h3 class="item__title">Выбранные улики</h3>
-        <transition-group v-if="SELECTED.EVIDENCES.length > 0" name="item__content" tag="ul" class="item__content">
-            <li class="item__content-li" v-for="(key, index) in SELECTED.EVIDENCES" :key="index" v-text="EVIDENCE[key]" @click="unselect(key)"/>
-        </transition-group>
-        <h5 v-else class="item__content item_title">Не выбрано ни одной улики</h5>
-    </div>
-    <div class="item">
-        <h3 class="item__title">Все улики</h3>
-        <transition-group name="item__content" tag="ul" class="item__content">
-            <li class="item__content-li" v-for="key in filteredEvidences" :key="key" v-text="EVIDENCE[key]" @click="select(key)"/>
-        </transition-group>
-    </div>
-    <div class="item">
-        <h3 class="item__title">Призраки</h3>
-        <ul class="item__content" data-ghosts>
-            <li class="item__content-li" v-for="item in filteredGhosts" @click="showGhostEvidences(item)">
-                <p class="item__content-li__header">{{ item }}</p>
-                <ul v-if="SELECTED.EVIDENCES.length === 2" class="item__content-li__massive">
-                    <template v-for="evidence in GHOSTS[item]">
-                        <li v-if="!SELECTED.EVIDENCES.includes(evidence)" class="item__content-li__massive-item">
-                            {{ EVIDENCE[evidence] }}
-                        </li>
-                    </template>
-                </ul>
-            </li>
-        </ul>
-    </div>
+    <template v-if="l18n.messages">
+        <div class="notifications">
+            <notification v-for="notification in notifications" :key="notification.key" :notification="notification" @delete="removeNotification"/>
+        </div>
+        <div class="languages">
+            <language v-for="name in listOfLanguages" :key="name" :language="languages[name]" :selected-language="selectedLanguage" @setLanguage="setLanguage"/>
+        </div>
+        <div class="item">
+            <h3 class="item__title" v-text="l18n.messages.selectedEvidence"/>
+            <transition-group v-if="selected.evidences.length > 0" name="item__content" tag="ul" class="item__content">
+                <li class="item__content-li" v-for="(key, index) in selected.evidences" :key="index" v-text="evidences[key]" @click="unselect(key)"/>
+            </transition-group>
+            <h5 v-else class="item__content item_title" v-text="l18n.messages.noEvidenceSelected"/>
+        </div>
+        <div class="item">
+            <h3 class="item__title" v-text="l18n.messages.allEvidence"/>
+            <transition-group name="item__content" tag="ul" class="item__content">
+                <li class="item__content-li" v-for="key in filteredEvidences" :key="key" v-text="evidences[key]" @click="select(key)"/>
+            </transition-group>
+        </div>
+        <div class="item">
+            <h3 class="item__title" v-text="l18n.messages.ghosts"/>
+            <ul class="item__content" data-ghosts>
+                <li class="item__content-li" v-for="item in filteredGhosts" @click="showGhostEvidences(item)">
+                    {{ item }}
+                    <ul v-if="selected.evidences.length === 2" class="item__content-li__massive">
+                        <template v-for="evidence in ghosts[item]">
+                            <li v-if="!selected.evidences.includes(evidence)" class="item__content-li__massive-item" v-text="evidences[evidence]"/>
+                        </template>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </template>
 </template>
 
 <script>
-    import { ghosts, evidences } from '../constants/lang/ru/list'
-    import notification from "./notification";
+    import config from "../config"
+    import * as languages from "../constants/lang/all"
+    import notification from "./notification"
+    import language from "./language"
 
     export default {
         name: "app",
-        components: {notification},
+        components: {notification, language},
 
         data () {
             return {
-                notifications: [],
+                languages,
 
-                SELECTED: {
-                    EVIDENCES: [],
-                },
+                selectedLanguage: null,
+                l18n:             {},
 
-                EVIDENCE: {
-                    ORB:    evidences.ORB,
-                    RADIO:  evidences.RADIO,
-                    FINGER: evidences.FINGER,
-                    EMP:    evidences.EMP,
-                    TEMP:   evidences.TEMP,
-                    BOOK:   evidences.BOOK,
-                    LASER:  evidences.LASER,
-                },
-
-                GHOSTS: {
-                    [ghosts.SPIRIT]:      ['EMP', 'RADIO', 'BOOK'],
-                    [ghosts.WRAITH]:      ['EMP', 'LASER', 'RADIO'],
-                    [ghosts.PHANTOM]:     ['RADIO', 'FINGER', 'LASER'],
-                    [ghosts.POLTERGEIST]: ['RADIO', 'FINGER', 'BOOK'],
-                    [ghosts.BANSHEE]:     ['LASER', 'FINGER', 'ORB'],
-                    [ghosts.JINN]:        ['TEMP', 'FINGER', 'EMP'],
-                    [ghosts.MARE]:        ['ORB', 'RADIO', 'BOOK'],
-                    [ghosts.REVENANT]:    ['ORB', 'TEMP', 'BOOK'],
-                    [ghosts.SHADE]:       ['BOOK', 'EMP', 'TEMP'],
-                    [ghosts.DEMON]:       ['FINGER', 'BOOK', 'TEMP'],
-                    [ghosts.YUREI]:       ['ORB', 'LASER', 'TEMP'],
-                    [ghosts.ONI]:         ['TEMP', 'EMP', 'LASER'],
-                    [ghosts.HANTU]:       ['FINGER', 'ORB', 'TEMP'],
-                    [ghosts.YOKAI]:       ['RADIO', 'ORB', 'LASER'],
-                    [ghosts.GORYO]:       ['EMP', 'FINGER', 'LASER'],
-                    [ghosts.MYLING]:      ['EMP', 'FINGER', 'BOOK'],
+                notifications:    [],
+                selected: {
+                    evidences:    [],
                 }
             }
         },
 
         methods: {
             select (key) {
-                if (this.SELECTED.EVIDENCES.length < 3 && !this.SELECTED.EVIDENCES.includes(key)) {
-                    this.SELECTED.EVIDENCES = [...this.SELECTED.EVIDENCES, key]
+                if (this.selected.evidences.length < 3 && !this.selected.evidences.includes(key)) {
+                    this.selected.evidences = [...this.selected.evidences, key]
                 }
+
+                this.triggerLocalSave()
 
                 if (this.filteredGhosts.length === 0) {
                     this.unselect(key)
-                    this.addNotification(`"${this.EVIDENCE[key]}": добавление данного пункта приведёт к пустому списку призраков`)
+                    this.addNotification(this.l18n.messages.emptyGhostList(this.evidences[key]))
                 }
             },
 
             unselect (key) {
-                this.SELECTED.EVIDENCES = this.SELECTED.EVIDENCES.filter(e => e !== key)
+                this.selected.evidences = this.selected.evidences.filter(e => e !== key)
+                this.triggerLocalSave()
             },
 
             showGhostEvidences (evidences) {
-                this.SELECTED.EVIDENCES = this.GHOSTS[evidences]
+                this.selected.evidences = this.ghosts[evidences]
             },
 
             addNotification (message) {
@@ -107,19 +90,105 @@
                 this.notifications = this.notifications.filter(notification => {
                     return notification.key !== key
                 })
+            },
+
+            setLanguage (lang) {
+                if (!Object.keys(this.languages).includes(lang)) {
+                    this.addNotification(this.l18n.messages.languageNotSupported)
+                    return false
+                }
+
+                this.selectedLanguage = lang
+                this.l18n = this.languages[lang]
+
+                localStorage.setItem('peh--language', lang)
+            },
+
+            triggerLocalSave () {
+                localStorage.setItem('peh--selected', JSON.stringify(this.selected.evidences))
             }
         },
 
         computed: {
+            /**
+             * Список призраков, подходящих под условие выбранных улик
+             * @return Array
+             */
             filteredGhosts () {
-                return Object.keys(this.GHOSTS).filter(ghost => {
-                    return this.SELECTED.EVIDENCES.every(evidence => this.GHOSTS[ghost].includes(evidence))
+                return Object.keys(this.ghosts).filter(ghost => {
+                    return this.selected.evidences.every(evidence => this.ghosts[ghost].includes(evidence))
                 })
             },
 
+            /**
+             * Невыбранные условия
+             * @return Array
+             */
             filteredEvidences () {
-                return Object.keys(this.EVIDENCE).filter(evidence => !this.SELECTED.EVIDENCES.includes(evidence))
+                return Object.keys(this.evidences).filter(evidence => !this.selected.evidences.includes(evidence))
+            },
+
+            /**
+             * Улики
+             * @return Object
+             */
+            evidences () {
+                if (!this.l18n.hasOwnProperty('evidences')) {
+                    return {}
+                }
+
+                return {
+                    orb:    this.l18n.evidences.orb,
+                    radio:  this.l18n.evidences.radio,
+                    finger: this.l18n.evidences.finger,
+                    emp:    this.l18n.evidences.emp,
+                    temp:   this.l18n.evidences.temp,
+                    book:   this.l18n.evidences.book,
+                    laser:  this.l18n.evidences.laser,
+                }
+            },
+
+            /**
+             * Призраки
+             * @return Object
+             */
+            ghosts () {
+                if (!this.l18n.hasOwnProperty('ghosts')) {
+                    return {}
+                }
+
+                return {
+                    [this.l18n.ghosts.spirit]:      ['emp', 'radio', 'book'],
+                    [this.l18n.ghosts.wraith]:      ['emp', 'laser', 'radio'],
+                    [this.l18n.ghosts.phantom]:     ['radio', 'finger', 'laser'],
+                    [this.l18n.ghosts.poltergeist]: ['radio', 'finger', 'book'],
+                    [this.l18n.ghosts.banshee]:     ['laser', 'finger', 'orb'],
+                    [this.l18n.ghosts.jinn]:        ['temp', 'finger', 'emp'],
+                    [this.l18n.ghosts.mare]:        ['orb', 'radio', 'book'],
+                    [this.l18n.ghosts.revenant]:    ['orb', 'temp', 'book'],
+                    [this.l18n.ghosts.shade]:       ['book', 'emp', 'temp'],
+                    [this.l18n.ghosts.demon]:       ['finger', 'book', 'temp'],
+                    [this.l18n.ghosts.yurei]:       ['orb', 'laser', 'temp'],
+                    [this.l18n.ghosts.oni]:         ['temp', 'emp', 'laser'],
+                    [this.l18n.ghosts.hantu]:       ['finger', 'orb', 'temp'],
+                    [this.l18n.ghosts.yokai]:       ['radio', 'orb', 'laser'],
+                    [this.l18n.ghosts.goryo]:       ['emp', 'finger', 'laser'],
+                    [this.l18n.ghosts.myling]:      ['emp', 'finger', 'book'],
+                }
+            },
+
+            /**
+             * Список языков
+             * @return Array
+             */
+            listOfLanguages () {
+                return Object.keys(this.languages)
             }
+        },
+
+        mounted () {
+            this.setLanguage(localStorage.getItem('peh--language') ?? config.PROJECT_LANGUAGE)
+            this.selected.evidences = JSON.parse(localStorage.getItem('peh--selected') ?? [])
         }
     }
 </script>
