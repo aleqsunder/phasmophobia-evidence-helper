@@ -13,7 +13,8 @@
   "dependencies": {
     "cross-env": "^7.0.3",
     "laravel-mix": "^6.0.31",
-    "vue": "^3.2.11"
+    "vue": "^3.2.11",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@vue/compiler-sfc": "^3.2.11",

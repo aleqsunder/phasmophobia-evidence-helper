@@ -12,4 +12,5 @@ export default {
     noEvidenceSelected: 'No evidence selected',
     emptyGhostList: evidence => `${evidence}: adding this item will result in an empty list of ghosts`,
     languageNotSupported: 'This language is not supported',
+    empty: 'Empty',
 }

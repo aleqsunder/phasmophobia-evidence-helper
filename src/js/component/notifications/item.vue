@@ -11,7 +11,7 @@
 
         methods: {
             deleteNotification () {
-                this.$emit('delete', this.notification.key)
+                this.$store.commit('notifications/remove', this.notification.key)
             }
         },
 
