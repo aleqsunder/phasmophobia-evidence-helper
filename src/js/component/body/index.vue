@@ -1,7 +1,7 @@
 <template>
     <div class="body">
         <Evidences title="selectedEvidence" items="selected" dispatch="unselect"/>
-        <Evidences title="allEvidence" items="unselected" dispatch="select"/>
+        <Evidences title="allEvidence" items="unselected" filter="ghosts/coincidingWith" dispatch="select" contextMenu="crossOut"/>
         <Ghosts title="ghosts" items="coinciding" dispatch="selectEvidence"/>
     </div>
 </template>

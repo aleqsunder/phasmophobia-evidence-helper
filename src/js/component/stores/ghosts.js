@@ -3,7 +3,7 @@ export default {
 
     state () {
         return {
-
+            filters: []
         }
     },
 
@@ -45,6 +45,12 @@ export default {
             return Object.keys(getters.list).filter(ghost => {
                 return rootGetters['evidences/selected'].every(evidence => getters.list[ghost].includes(evidence))
             })
-        }
+        },
+
+        coincidingWith: (state, getters, rootState, rootGetters) => item => {
+            return Object.keys(getters.list).filter(ghost => {
+                return [...rootGetters['evidences/selected'], item].every(evidence => getters.list[ghost].includes(evidence))
+            })
+        },
     }
 }

@@ -5,6 +5,7 @@ export default {
 
     // Заголовки
     selectedEvidence: 'Выбранные улики',
+    crossedOutEvidence: 'Перечёркнутые улики',
     allEvidence: 'Все улики',
     ghosts: 'Призраки',
 

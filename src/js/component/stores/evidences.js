@@ -3,23 +3,31 @@ export default {
 
     state () {
         return {
-            selected: JSON.parse(localStorage.getItem('peh--selected')) ?? []
+            selected: JSON.parse(localStorage.getItem('peh--selected')) ?? [],
+            crossedOut: JSON.parse(localStorage.getItem('peh--crossedOut')) ?? [],
         }
     },
 
     actions: {
         select ({ commit, getters, rootGetters }, name) {
-            commit('select', name)
-
-            if (rootGetters['ghosts/coinciding'].length === 0) {
-                commit('unselect', name)
-                commit('notifications/add', rootGetters['languages/messages'].emptyGhostList(getters.getByName(name)), {root: true})
+            if (rootGetters['ghosts/coincidingWith'](name).length === 0) {
+                return commit('notifications/add', rootGetters['languages/messages'].emptyGhostList(getters.getByName(name)), {root: true})
             }
+
+            commit('select', name)
         },
 
         unselect ({ commit }, name) {
             commit('unselect', name)
-        }
+        },
+
+        crossOut ({ commit }, name) {
+            commit('crossOut', name)
+        },
+
+        uncrossOut ({ commit }, name) {
+            commit('uncrossOut', name)
+        },
     },
 
     mutations: {
@@ -36,18 +44,28 @@ export default {
             localStorage.setItem('peh--selected', JSON.stringify(state.selected))
         },
 
+        crossOut (state, name) {
+            state.crossedOut = [...state.crossedOut, name]
+            localStorage.setItem('peh--crossedOut', JSON.stringify(state.crossedOut))
+        },
+
+        uncrossOut (state, name) {
+            state.crossedOut = state.crossedOut.filter(e => e !== name)
+            localStorage.setItem('peh--crossedOut', JSON.stringify(state.crossedOut))
+        },
+
         set (state, evidences) {
             state.selected = evidences
         }
     },
 
     getters: {
-        getByName: (state, getters) => name => {
-            return getters.list[name]
+        getByName: (state, getters, rootState, rootGetters) => name => {
+            return rootGetters['languages/evidences'][name]
         },
 
         list (state, getters, rootState, rootGetters) {
-            return rootGetters['languages/evidences']
+            return Object.filter(rootGetters['languages/evidences'], evidence => state.crossedOut.includes(evidence), true)
         },
 
         unselected (state, getters) {
@@ -56,6 +74,10 @@ export default {
 
         selected (state) {
             return state.selected
+        },
+
+        crossedOut (state) {
+            return state.crossedOut
         }
     }
 }
