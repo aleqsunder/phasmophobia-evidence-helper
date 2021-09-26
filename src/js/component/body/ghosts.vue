@@ -4,7 +4,7 @@
         <ul v-if="itemsLength > 0" class="item__content">
             <li class="item__content-li" v-for="(item, key) in normalizedItems" :key="key" @click="callback(key)">
                 {{ item }}
-                <ul v-if="selectedEvidences.length === 2" class="item__content-li__massive">
+                <ul v-if="itemsLength <= 3" class="item__content-li__massive">
                     <template v-for="evidence in ghostEvidence(item)">
                         <li v-if="!selectedEvidences.includes(evidence)" class="item__content-li__massive-item" v-text="normalizedEvidence(evidence)"/>
                     </template>
@@ -17,7 +17,11 @@
 <script>
     export default {
         name: "GhostTemplate",
-        props: ['title', 'items', 'dispatch'],
+        props: {
+            title:    [String, Number],
+            items:    {type: String, default: () => 'list'},
+            dispatch: {type: String, default: () => null},
+        },
 
         methods: {
             callback (name) {

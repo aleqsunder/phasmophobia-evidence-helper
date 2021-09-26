@@ -8,18 +8,11 @@ export default {
     },
 
     mutations: {
-        add (state, message) {
-            state.list = [...state.list, {key: Date.now(), message}]
-        },
-
-        remove (state, key) {
-            state.list = state.list.filter(notification => notification.key !== key)
-        }
+        add: (state, message) => state.list = [...state.list, {key: Date.now(), message}],
+        remove: (state, key) => state.list = state.list.filter(notification => notification.key !== key)
     },
 
     getters: {
-        firstThree (state) {
-            return [...state.list].splice(0, 3)
-        }
+        firstThree: (state) => [...state.list].splice(0, 3)
     }
 }

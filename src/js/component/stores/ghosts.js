@@ -3,20 +3,19 @@ export default {
 
     state () {
         return {
-            filters: []
+            types: {
+                selected: 'filterSelected',
+                crossedOut: 'filterCrossedOut'
+            }
         }
     },
 
     actions: {
-        selectEvidence ({ commit, getters }, name) {
-            commit('evidences/set', getters.getByName(name), {root: true})
-        }
+        selectEvidence: ({ commit, getters }, name) => commit('evidences/set', getters.getByName(name), {root: true})
     },
 
     getters: {
-        getByName: (state, getters) => name => {
-            return getters.list[name]
-        },
+        getByName: (state, getters) => name => getters.list[name],
 
         list (state, getters, rootState, rootGetters) {
             const ghosts = rootGetters['languages/ghosts']
@@ -41,16 +40,31 @@ export default {
             }
         },
 
-        coinciding (state, getters, rootState, rootGetters) {
-            return Object.keys(getters.list).filter(ghost => {
-                return rootGetters['evidences/selected'].every(evidence => getters.list[ghost].includes(evidence))
-            })
+        filterSelected: (state, getters, rootState, rootGetters) => (ghost, item) =>
+            rootGetters['evidences/selected'].concat(item).every(evidence => getters.list[ghost].includes(evidence)),
+
+        filterCrossedOut: (state, getters, rootState, rootGetters) => (ghost, item) =>
+            !rootGetters['evidences/crossedOut'].concat(item).some(evidence => getters.list[ghost].includes(evidence)),
+
+        coinciding: (state, getters) => Object.keys(getters.list)
+            .filter(ghost => getters.filterSelected(ghost, []))
+            .filter(ghost => getters.filterCrossedOut(ghost, [])),
+
+        coincidingWith: (state, getters) => (item, type = 'selected') => {
+            if (!Object.keys(state.types).includes(type)) {
+                return []
+            }
+
+            let ghosts = Object.keys(getters.list)
+
+            for (let index of Object.keys(state.types)) {
+                ghosts = ghosts.filter(ghost => getters[state.types[index]](ghost, type === index ? item: []))
+            }
+
+            return ghosts
         },
 
-        coincidingWith: (state, getters, rootState, rootGetters) => item => {
-            return Object.keys(getters.list).filter(ghost => {
-                return [...rootGetters['evidences/selected'], item].every(evidence => getters.list[ghost].includes(evidence))
-            })
-        },
+        coincidingSelectedWith: (state, getters) => item => getters.coincidingWith(item, 'selected'),
+        coincidingCrossedOutWith: (state, getters) => item => getters.coincidingWith(item, 'crossedOut'),
     }
 }

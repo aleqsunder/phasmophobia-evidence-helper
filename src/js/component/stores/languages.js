@@ -23,32 +23,13 @@ export default {
     },
 
     getters: {
-        getByName: state => name => {
-            return state.list[name]
-        },
+        getByName: state => name => state.list[name],
+        list:      state => state.list,
+        names:     state => Object.keys(state.list),
+        selected:  state => state.list[state.selectedLanguage],
 
-        list (state) {
-            return state.list
-        },
-
-        names (state) {
-            return Object.keys(state.list)
-        },
-
-        selected (state) {
-            return state.list[state.selectedLanguage]
-        },
-
-        messages (state, getters) {
-            return getters.selected.messages
-        },
-
-        evidences (state, getters) {
-            return getters.selected.evidences
-        },
-
-        ghosts (state, getters) {
-            return getters.selected.ghosts
-        },
+        messages:  (state, getters) => getters.selected.messages,
+        evidences: (state, getters) => getters.selected.evidences,
+        ghosts:    (state, getters) => getters.selected.ghosts,
     }
 }

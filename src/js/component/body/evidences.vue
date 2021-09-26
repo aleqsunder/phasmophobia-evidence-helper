@@ -13,23 +13,11 @@
     export default {
         name: "EvidenceTemplate",
         props: {
-            title: [String, Number],
-            items: {
-                type: String,
-                default: () => 'list'
-            },
-            dispatch: {
-                type: String,
-                default: () => null
-            },
-            contextMenu: {
-                type: String,
-                default: () => null
-            },
-            filter: {
-                type: String,
-                default: () => null
-            }
+            title:       [String, Number],
+            items:       {type: String, default: () => 'list'},
+            dispatch:    {type: String, default: () => null},
+            contextMenu: {type: String, default: () => null},
+            filter:      {type: String, default: () => null}
         },
 
         methods: {
