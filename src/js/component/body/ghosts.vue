@@ -4,7 +4,7 @@
         <ul v-if="itemsLength > 0" class="item__content">
             <li class="item__content-li" v-for="(item, key) in normalizedItems" :key="key" @click="callback(key)">
                 {{ item }}
-                <ul v-if="itemsLength <= 3" class="item__content-li__massive">
+                <ul v-if="itemsLength > 0 && itemsLength <= 3" class="item__content-li__massive">
                     <template v-for="evidence in ghostEvidence(item)">
                         <li v-if="!selectedEvidences.includes(evidence)" class="item__content-li__massive-item" v-text="normalizedEvidence(evidence)"/>
                     </template>
