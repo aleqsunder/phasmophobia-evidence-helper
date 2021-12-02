@@ -1,3 +1,5 @@
+import GhostList from './ghosts/_list'
+
 export default {
     namespaced: true,
 
@@ -19,25 +21,7 @@ export default {
 
         list (state, getters, rootState, rootGetters) {
             const ghosts = rootGetters['languages/ghosts']
-
-            return {
-                [ghosts.spirit]:      ['emp', 'radio', 'book'],
-                [ghosts.wraith]:      ['emp', 'laser', 'radio'],
-                [ghosts.phantom]:     ['radio', 'finger', 'laser'],
-                [ghosts.poltergeist]: ['radio', 'finger', 'book'],
-                [ghosts.banshee]:     ['laser', 'finger', 'orb'],
-                [ghosts.jinn]:        ['temp', 'finger', 'emp'],
-                [ghosts.mare]:        ['orb', 'radio', 'book'],
-                [ghosts.revenant]:    ['orb', 'temp', 'book'],
-                [ghosts.shade]:       ['book', 'emp', 'temp'],
-                [ghosts.demon]:       ['finger', 'book', 'temp'],
-                [ghosts.yurei]:       ['orb', 'laser', 'temp'],
-                [ghosts.oni]:         ['temp', 'emp', 'laser'],
-                [ghosts.hantu]:       ['finger', 'orb', 'temp'],
-                [ghosts.yokai]:       ['radio', 'orb', 'laser'],
-                [ghosts.goryo]:       ['emp', 'finger', 'laser'],
-                [ghosts.myling]:      ['emp', 'finger', 'book'],
-            }
+            return Object.keys(ghosts).reduce((o, i) => (o[ghosts[i]] = new GhostList[i]().items, o), {})
         },
 
         filterSelected: (state, getters, rootState, rootGetters) => (ghost, item) =>
